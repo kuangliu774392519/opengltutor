@@ -1,110 +1,159 @@
-#include "check_gl.hpp"
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include "check_gl.hpp" // includes glad/glad.h
+#include <GLFW/glfw3.h> // must be placed behind glad/glad.h
+#include <stdexcept>
 #include <iostream>
-#include "Game.hpp"
+#include <cstring>
+#include <cstdlib>
+
+
+void  render()
+{
+
+    glBegin(GL_TRIANGLES);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    constexpr int n=600;
+    constexpr float pi=3.1415926535897f;
+
+    float radius=0.3f;
+    float inner_radius=0.15f;
+
+    for(int i=0;i<250;i++)
+    {
+        float angle=i/(float)n*pi*2;
+        float angle_next=(i+1)/(float)n*pi*2;
+
+        glColor3f(1,0,0);
+        glVertex3f(radius* sinf(angle),0.5+radius* cosf(angle),0.0f);
+        glVertex3f(radius* sinf(angle_next),0.5+radius* cosf(angle_next),0.0f);
+        glVertex3f(inner_radius* sinf(angle),0.5+inner_radius* cosf(angle),0.0f);
+
+        glVertex3f(inner_radius* sinf(angle_next),0.5+inner_radius* cosf(angle_next),0.0f);
+        glVertex3f(inner_radius* sinf(angle),0.5+inner_radius* cosf(angle),0.0f);
+        glVertex3f(radius* sinf(angle_next),0.5+inner_radius* cosf(angle_next),0.0f);
+
+    }
+    for(int i=350;i<n;i++)
+    {
+        float angle=i/(float)n*pi*2;
+        float angle_next=(i+1)/(float)n*pi*2;
+
+        glColor3f(1,0,0);
+        glVertex3f(radius* sinf(angle),0.5+radius* cosf(angle),0.0f);
+        glVertex3f(radius* sinf(angle_next),0.5+radius* cosf(angle_next),0.0f);
+        glVertex3f(inner_radius* sinf(angle),0.5+inner_radius* cosf(angle),0.0f);
+
+        glVertex3f(inner_radius* sinf(angle_next),0.5+inner_radius* cosf(angle_next),0.0f);
+        glVertex3f(inner_radius* sinf(angle),0.5+inner_radius* cosf(angle),0.0f);
+        glVertex3f(radius* sinf(angle_next),0.5+inner_radius* cosf(angle_next),0.0f);
+
+    }
+
+
+
+
+
+    for(int i=50;i<550;i++)
+    {
+        float angle=i/(float)n*pi*2;
+        float angle_next=(i+1)/(float)n*pi*2;
+
+        glColor3f(0,0,1);
+
+        glVertex3f(0.5+radius* sinf(angle),radius* cosf(angle),0.0f);
+        glVertex3f(0.5+radius* sinf(angle_next),radius* cosf(angle_next),0.0f);
+        glVertex3f(0.5+inner_radius* sinf(angle),inner_radius* cosf(angle),0.0f);
+
+        glVertex3f(0.5+inner_radius* sinf(angle_next),inner_radius* cosf(angle_next),0.0f);
+        glVertex3f(0.5+inner_radius* sinf(angle),inner_radius* cosf(angle),0.0f);
+        glVertex3f(0.5+radius* sinf(angle_next),inner_radius* cosf(angle_next),0.0f);
+
+    }
+
+
+    for(int i=0;i<50;i++)
+    {
+        float angle=i/(float)n*pi*2;
+        float angle_next=(i+1)/(float)n*pi*2;
+
+        glColor3f(0,1,0);
+
+        glVertex3f(radius* sinf(angle)-0.5,radius* cosf(angle),0.0f);
+        glVertex3f(radius* sinf(angle_next)-0.5,radius* cosf(angle_next),0.0f);
+        glVertex3f(inner_radius* sinf(angle)-0.5,inner_radius* cosf(angle),0.0f);
+
+        glVertex3f(inner_radius* sinf(angle_next)-0.5,inner_radius* cosf(angle_next),0.0f);
+        glVertex3f(inner_radius* sinf(angle)-0.5,inner_radius* cosf(angle),0.0f);
+        glVertex3f(radius* sinf(angle_next)-0.5,inner_radius* cosf(angle_next),0.0f);
+
+    }
+
+    for(int i=150;i<n;i++)
+    {
+        float angle=i/(float)n*pi*2;
+        float angle_next=(i+1)/(float)n*pi*2;
+
+        glColor3f(0,1,0);
+
+        glVertex3f(radius* sinf(angle)-0.5,radius* cosf(angle),0.0f);
+        glVertex3f(radius* sinf(angle_next)-0.5,radius* cosf(angle_next),0.0f);
+        glVertex3f(inner_radius* sinf(angle)-0.5,inner_radius* cosf(angle),0.0f);
+
+        glVertex3f(inner_radius* sinf(angle_next)-0.5,inner_radius* cosf(angle_next),0.0f);
+        glVertex3f(inner_radius* sinf(angle)-0.5,inner_radius* cosf(angle),0.0f);
+        glVertex3f(radius* sinf(angle_next)-0.5,inner_radius* cosf(angle_next),0.0f);
+
+    }
+
+
+    CHECK_GL(glEnd);
+}
+
 
 int main() {
-    // Initalize GLFW library
-    if (!glfwInit()) {
-        const char *errmsg;
-        glfwGetError(&errmsg);
-        if (!errmsg) errmsg = "(no error)";
-        std::cerr << "failed to initialize GLFW: " << errmsg << '\n';
-        return -1;
-    }
+   
+   if(!glfwInit())// 初始化GLFW库
+  {
+    throw std::runtime_error("failed to initialize GLFW");
 
-    // Hint the version required: OpenGL 2.0
-    constexpr int version = 20;
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, version / 10);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, version % 10);
-    if (version >= 33) {
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-    }
+  }
 
-    // enable 4x MSAA
-    glfwWindowHint(GLFW_SAMPLES, 4);
+//创建窗口并设置上下文
+  auto window=glfwCreateWindow(640,640,"Example",nullptr,nullptr);
+  if(!window){
+    glfwTerminate();
+    throw std::runtime_error("GLFW failed to create window");
+  }
+  glfwMakeContextCurrent(window);
 
-    // Enable transparent framebuffer
-    constexpr bool transparent = false;
-    if (transparent) {
-        glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
-        glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_FALSE);
-        glfwWindowHint(GLFW_FOCUSED, GLFW_FALSE);
-    }
 
-    // Create main window
-    constexpr char title[] = "Example";
-    GLFWwindow *window = glfwCreateWindow(1024, 768, title, NULL, NULL);
-
-    // Test if window creation succeed
-    if (!window) {
-        check_gl::opengl_show_glfw_error_diagnose();
+  //初始化GLAD,加载函数指针.该操作必须在glfwMakeContextCurrent之后
+    if(!gladLoadGL())
+     {
         glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
+        throw std::runtime_error("GLAD failed to load GL functions");
+     }
 
-    // Switch to fullscreen mode
-    constexpr bool fullscreen = false;
-    if (fullscreen) {
-        GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-        if (monitor) {
-            const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-            if (mode) {
-                glfwSetWindowSize(window, mode->width, mode->height);
-                glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-                std::cerr << "Entered fullscreen mode: " << mode->width << 'x' << mode->height
-                    << " at " << mode->refreshRate << " Hz\n";
-            }
-        }
-    } else {
-        GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-        if (monitor) {
-            const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-            if (mode) {
-                int width, height;
-                glfwGetWindowSize(window, &width, &height);
-                glfwSetWindowPos(window, (mode->width - width) / 2, (mode->height - height) / 2);
-            }
-        }
-    }
+     printf("OpenGL version:",glGetString(GL_VERSION));
 
-    // Load glXXX function pointers (only after this you may use OpenGL functions)
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        glfwTerminate();
-        std::cerr << "GLAD failed to load GL functions\n";
-        return -1;
-    }
-    check_gl::opengl_try_enable_debug_message();
 
-    // Print diagnostic information
-    std::cerr << "OpenGL version: " << (const char *)glGetString(GL_VERSION) << '\n';
+    while (!glfwWindowShouldClose(window)){
 
-    // Enable V-Sync
-    glfwSwapInterval(1);
 
-    // Create game instance
-    auto &game = Game::get();
-    game.set_window(window);
+        render();
 
-    // Initialize data structures
-    game.initialize();
-    // Start main game loop
-    while (!glfwWindowShouldClose(window)) {
-        // Render graphics
-        game.render();
-        // Update screen
+
+
+
+        glEnd();
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    glfwTerminate();
-    return 0;
+
+
+
 }
